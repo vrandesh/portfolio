@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+.DS_Store
+Thumbs.db
+npm-debug.log*
+
+# Held back from the published site and from git until cleared for public release.
+private/

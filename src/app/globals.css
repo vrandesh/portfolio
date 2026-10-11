@@ -1,0 +1,1549 @@
+/* ------------------------------------------------------------------
+   Tokens
+   ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Pine is the ground for the header, hero and footer in both themes. */
+  --pine: #0e3a35;
+  --pine-line: #2c5c55;
+  --on-pine: #f2f7f4;
+  --on-pine-body: #d6e5df;
+  --on-pine-soft: #b4cec6;
+
+  /* Saffron marks the one thing on screen that needs a person. */
+  --saffron: #eda81f;
+  --saffron-lift: #f7bd45;
+  --saffron-ink: #251900;
+
+  --paper: #f3f6f4;
+  --surface: #ffffff;
+  --band: #e6eeea;
+  --ink: #10201e;
+  --ink-soft: #4a5c59;
+  --line: #cfd9d5;
+  --teal: #0a6b5f;
+  --pulse: #2fd0b6;
+  --solid: #0e3a35;
+  --solid-lift: #14514a;
+  --on-solid: #f2f7f4;
+
+  /* One family. Width does the work a second typeface usually does:
+     wide for names of things, normal for prose, narrow for metadata. */
+  --font: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --wide: 120%;
+  --semi-wide: 110%;
+  --narrow: 84%;
+
+  --text: 1.0625rem;
+  --lede: 1.1875rem;
+  --small: 0.9375rem;
+  --meta: 0.875rem;
+
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --max: 75rem;
+  --rail: 13rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b1615;
+    --surface: #122220;
+    --band: #132623;
+    --ink: #e4ece9;
+    --ink-soft: #9bb0aa;
+    --line: #25403b;
+    --teal: #5cc9b8;
+    --pulse: #d9fff8;
+    --solid: #5cc9b8;
+    --solid-lift: #7ad8c9;
+    --on-solid: #06201c;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text);
+  font-stretch: 100%;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+p,
+dd,
+li {
+  text-wrap: pretty;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--saffron);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+h2 {
+  font-stretch: var(--wide);
+  font-weight: 680;
+  letter-spacing: -0.012em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+h3 {
+  font-stretch: var(--semi-wide);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  line-height: 1.15;
+}
+
+/* Metadata voice: narrow, medium weight, figures that line up. */
+.case-meta,
+.role-when,
+.brief-org,
+.doc-meta,
+.stage-by,
+.stage-label,
+.chips li,
+.legend,
+.facts dt,
+.career-year,
+.career-where,
+.colophon,
+.ledger-when {
+  font-stretch: var(--narrow);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.012em;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------
+   Utilities
+   ------------------------------------------------------------------ */
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.quiet {
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -4rem;
+  z-index: 20;
+  padding: 0.6rem 0.9rem;
+  background: var(--saffron);
+  color: var(--saffron-ink);
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.skip:focus {
+  top: 0.6rem;
+}
+
+.icon {
+  flex: none;
+}
+
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.icon-link:hover {
+  text-decoration-color: currentColor;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.7em 1.05em;
+  border: 1.5px solid transparent;
+  border-radius: 3px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.button-small {
+  padding: 0.5em 0.8em;
+  font-size: var(--small);
+}
+
+.button-accent {
+  background: var(--saffron);
+  color: var(--saffron-ink);
+}
+
+.button-accent:hover {
+  background: var(--saffron-lift);
+}
+
+/* For the pine ground. */
+.button-ghost {
+  border-color: var(--pine-line);
+  color: var(--on-pine);
+}
+
+.button-ghost:hover {
+  border-color: var(--on-pine);
+}
+
+/* For the paper ground. */
+.button-solid {
+  background: var(--solid);
+  color: var(--on-solid);
+}
+
+.button-solid:hover {
+  background: var(--solid-lift);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chips li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+}
+
+/* ------------------------------------------------------------------
+   Header
+   ------------------------------------------------------------------ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--pine);
+  color: var(--on-pine);
+  border-bottom: 1px solid var(--pine-line);
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  min-height: 3.75rem;
+}
+
+.wordmark {
+  font-stretch: var(--semi-wide);
+  font-weight: 680;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav {
+  margin-left: auto;
+}
+
+.site-nav ul {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.site-nav a,
+.site-header-actions .icon-link {
+  color: var(--on-pine-soft);
+  font-size: var(--small);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-header-actions .icon-link:hover {
+  color: var(--on-pine);
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+/* ------------------------------------------------------------------
+   Field: the pine ground with slow colour and the dot grid behind it
+   ------------------------------------------------------------------ */
+
+.field {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--pine);
+  color: var(--on-pine);
+}
+
+.field > .wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.mesh,
+.dot-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mesh span {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.mesh span:nth-child(1) {
+  width: min(48vw, 40rem);
+  left: -8%;
+  top: -30%;
+  background: #1b7f70;
+  opacity: 0.42;
+  animation: drift-a 28s ease-in-out infinite alternate;
+}
+
+.mesh span:nth-child(2) {
+  width: min(42vw, 36rem);
+  right: -6%;
+  top: 8%;
+  background: #12557a;
+  opacity: 0.42;
+  animation: drift-b 34s ease-in-out infinite alternate;
+}
+
+.mesh span:nth-child(3) {
+  width: min(34vw, 28rem);
+  left: 34%;
+  bottom: -30%;
+  background: #c0821c;
+  opacity: 0.16;
+  animation: drift-c 40s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(14%, 18%, 0) scale(1.15);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate3d(-18%, 12%, 0) scale(0.9);
+  }
+}
+
+@keyframes drift-c {
+  to {
+    transform: translate3d(-22%, -16%, 0) scale(1.2);
+  }
+}
+
+/* Dots sit quieter behind the text than in the open ground beside it. */
+.dot-field {
+  -webkit-mask-image: linear-gradient(100deg, rgb(0 0 0 / 0.42) 0%, rgb(0 0 0 / 0.42) 38%, #000 72%);
+  mask-image: linear-gradient(100deg, rgb(0 0 0 / 0.42) 0%, rgb(0 0 0 / 0.42) 38%, #000 72%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh span {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------ */
+
+.hero {
+  padding-top: clamp(2.75rem, 7vw, 5.5rem);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 19rem);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.hero-name {
+  font-size: 1.1875rem;
+  font-stretch: var(--semi-wide);
+  font-weight: 680;
+  line-height: 1.35;
+}
+
+.hero-role {
+  display: block;
+  font-stretch: 100%;
+  font-weight: 400;
+  color: var(--on-pine-soft);
+}
+
+.hero-statement {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(2.125rem, 0.9rem + 3.4vw, 3.375rem);
+  font-stretch: var(--wide);
+  font-weight: 680;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.hero-intro {
+  margin-top: 1.5rem;
+  max-width: 37em;
+  font-size: var(--lede);
+  line-height: 1.55;
+  color: var(--on-pine-body);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin-top: 1.25rem;
+  font-size: var(--small);
+  color: var(--on-pine-soft);
+}
+
+.hero-links a:hover {
+  color: var(--on-pine);
+}
+
+.hero-portrait img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.facts {
+  margin-top: 1rem;
+  border-top: 1px solid var(--pine-line);
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.6rem;
+  border-bottom: 1px solid var(--pine-line);
+  font-size: var(--small);
+  line-height: 1.4;
+}
+
+.facts dt {
+  padding-top: 0.1em;
+  color: var(--on-pine-soft);
+}
+
+.facts-available::before {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--saffron);
+}
+
+/* Career, drawn as one line with a stop for each move. */
+.career {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  row-gap: 1.75rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.career li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 1.6rem 1rem 0 0;
+}
+
+.career li::before {
+  content: '';
+  position: absolute;
+  inset: 5px 0 auto 0;
+  height: 2px;
+  background: var(--pine-line);
+  transform-origin: left;
+}
+
+.career li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--on-pine-soft);
+  border-radius: 50%;
+  background: var(--pine);
+}
+
+.career li.is-ongoing::before {
+  background: var(--saffron);
+}
+
+/* The line runs on past the last stop and fades: still going. */
+.career li.is-latest::before {
+  background: linear-gradient(to right, var(--saffron), transparent);
+}
+
+.career li.is-ongoing::after {
+  border-color: var(--saffron);
+  background: var(--saffron);
+}
+
+.career-year {
+  color: var(--on-pine);
+  font-weight: 650;
+}
+
+.career-now {
+  color: var(--saffron);
+}
+
+.career-what {
+  font-size: var(--small);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.career-where {
+  color: var(--on-pine-soft);
+}
+
+/* The one orchestrated moment: the line draws itself once, on load. */
+@media (prefers-reduced-motion: no-preference) {
+  .career li::before {
+    animation: draw 0.2s linear both;
+    animation-delay: calc(var(--i) * 0.2s + 0.35s);
+  }
+
+  .career li::after,
+  .career li > span {
+    animation: arrive 0.35s ease-out both;
+    animation-delay: calc(var(--i) * 0.2s + 0.35s);
+  }
+}
+
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Sections
+   ------------------------------------------------------------------ */
+
+.section {
+  padding-block: clamp(4rem, 9vw, 7rem);
+}
+
+.section + .section {
+  border-top: 1px solid var(--line);
+}
+
+.section-head {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.section-head h2 {
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3rem);
+}
+
+.section-head p {
+  margin-top: 1rem;
+  max-width: 36em;
+  font-size: var(--lede);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.subsection {
+  margin-top: clamp(3rem, 7vw, 5rem);
+}
+
+.subsection-title {
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--ink);
+  font-size: 1.5rem;
+}
+
+/* How I work: a real sequence, so the steps are numbered. */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.25rem 2.5rem;
+  counter-reset: step;
+}
+
+.steps li {
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--ink);
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-stretch: var(--narrow);
+  font-size: var(--meta);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--teal);
+}
+
+.steps h3 {
+  font-size: 1.25rem;
+}
+
+.steps p {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Work is grouped by kind. */
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.jump a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+  font-size: var(--small);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.jump a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.group {
+  margin-top: clamp(3.5rem, 8vw, 6rem);
+}
+
+.section-head + .group {
+  margin-top: 0;
+}
+
+.group-head {
+  padding-bottom: 1.1rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.group-head h3 {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+}
+
+.group-head p {
+  max-width: 40em;
+  margin-top: 0.4rem;
+  color: var(--ink-soft);
+}
+
+.group-more {
+  margin-top: 1.25rem;
+  font-size: var(--small);
+  font-weight: 550;
+  color: var(--teal);
+}
+
+/* ------------------------------------------------------------------
+   Signal path: who makes the call at each step
+   ------------------------------------------------------------------ */
+
+.stage-marker {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background: var(--paper);
+}
+
+[data-by='data'] > .stage-marker {
+  width: 12px;
+  height: 12px;
+  margin: 1px;
+  border: 2px solid var(--ink-soft);
+}
+
+[data-by='code'] > .stage-marker {
+  border-radius: 50%;
+  background: var(--teal);
+}
+
+[data-by='model'] > .stage-marker {
+  border: 2px solid var(--teal);
+  border-radius: 50%;
+}
+
+[data-by='person'] > .stage-marker {
+  width: 12px;
+  height: 12px;
+  margin: 1px;
+  border: 2px solid var(--ink);
+  background: var(--saffron);
+  transform: rotate(45deg);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin-top: 1.5rem;
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.path {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin-top: 2rem;
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1.6rem 1rem 0 0;
+}
+
+/* The line leaving a stage. Dashed when what travels along it is still
+   a proposal from a model rather than a decision. */
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 6px 0 auto 0;
+  border-top: 2px solid var(--teal);
+}
+
+.stage[data-by='model']::before {
+  border-top-style: dashed;
+}
+
+.stage:last-child::before {
+  display: none;
+}
+
+.stage > .stage-marker {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+}
+
+/* A request travelling the path. */
+@media (prefers-reduced-motion: no-preference) {
+  .path {
+    position: relative;
+  }
+
+  .path::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: calc(100% * (var(--n) - 1) / var(--n));
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--pulse) 50%, transparent) no-repeat;
+    background-size: 5rem 100%;
+    animation: travel 6.5s linear infinite;
+    pointer-events: none;
+  }
+
+  .case:nth-of-type(2n) .path::after {
+    animation-delay: -2.2s;
+  }
+
+  .case:nth-of-type(3n) .path::after {
+    animation-delay: -4.1s;
+  }
+}
+
+@keyframes travel {
+  from {
+    background-position: -5rem 0;
+  }
+  to {
+    background-position: calc(100% + 5rem) 0;
+  }
+}
+
+@keyframes travel-down {
+  from {
+    background-position: 0 -4rem;
+  }
+  to {
+    background-position: 0 calc(100% + 4rem);
+  }
+}
+
+.stage-by {
+  color: var(--ink-soft);
+}
+
+.stage-label {
+  font-size: var(--small);
+  font-weight: 560;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------------------
+   Case studies
+   ------------------------------------------------------------------ */
+
+.case {
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.group .case:first-of-type {
+  border-top: 0;
+}
+
+.case-head {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 0.75rem 2rem;
+}
+
+.case-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.5rem;
+  color: var(--ink-soft);
+}
+
+.case-org {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.case-title {
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2rem);
+  font-stretch: var(--semi-wide);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  line-height: 1.15;
+}
+
+.case-summary {
+  margin-top: 0.75rem;
+  max-width: 38em;
+  font-size: var(--lede);
+  line-height: 1.5;
+}
+
+.pao {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+  margin-top: 1.5rem;
+}
+
+.pao dt {
+  margin-bottom: 0.4rem;
+  font-stretch: var(--semi-wide);
+  font-size: var(--small);
+  font-weight: 650;
+}
+
+.pao dd {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.case-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem 2rem;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.case-detail {
+  margin-top: 1.75rem;
+}
+
+.case-detail summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: var(--small);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.case-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+.case-detail summary::before {
+  content: '+';
+  display: inline-grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.case-detail[open] summary::before {
+  content: '\2212';
+}
+
+.case-points,
+.role-points {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 44em;
+  margin-top: 1rem;
+  padding-left: 1.25rem;
+  list-style: square;
+}
+
+.case-points {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.case-points li,
+.role-points li {
+  padding-left: 0.25rem;
+}
+
+.case-points li::marker,
+.role-points li::marker {
+  color: var(--teal);
+}
+
+.work-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: var(--small);
+  font-weight: 550;
+  color: var(--teal);
+}
+
+/* ------------------------------------------------------------------
+   Brief lists: more work, repositories
+   ------------------------------------------------------------------ */
+
+.brief {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr) minmax(12rem, auto);
+  gap: 0.6rem 2rem;
+  align-items: start;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.brief-org {
+  padding-top: 0.25rem;
+  color: var(--ink-soft);
+}
+
+.brief h4 {
+  font-size: 1.1875rem;
+  font-stretch: 106%;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.brief-body p {
+  max-width: 38em;
+  margin-top: 0.35rem;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.brief-body .chips {
+  margin-top: 0.8rem;
+}
+
+.brief .work-links {
+  flex-direction: column;
+  padding-top: 0.2rem;
+}
+
+/* ------------------------------------------------------------------
+   Experience
+   ------------------------------------------------------------------ */
+
+.role {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 0.5rem 2rem;
+  padding-block: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.role:first-child {
+  border-top: 2px solid var(--ink);
+}
+
+.role-when {
+  padding-top: 0.45rem;
+  color: var(--ink-soft);
+}
+
+.role-place {
+  display: block;
+}
+
+.role h3 {
+  font-size: 1.5rem;
+}
+
+.role-title {
+  margin-top: 0.3rem;
+  font-weight: 560;
+}
+
+.role .chips {
+  margin-top: 1.2rem;
+}
+
+.role-brief h3 {
+  font-size: 1.1875rem;
+}
+
+.role-brief .role-title + p {
+  max-width: 38em;
+  margin-top: 0.35rem;
+  color: var(--ink-soft);
+}
+
+.reference {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 1.25rem 2rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+}
+
+.reference blockquote,
+.reference figcaption {
+  grid-column: 2;
+  padding-left: 1.5rem;
+  border-left: 3px solid var(--saffron);
+}
+
+.reference blockquote {
+  max-width: 32em;
+  font-size: clamp(1.1875rem, 1rem + 0.9vw, 1.5rem);
+  line-height: 1.45;
+}
+
+.reference figcaption {
+  display: flex;
+  flex-direction: column;
+  border-left-color: transparent;
+  font-size: var(--small);
+}
+
+.reference-name {
+  font-weight: 650;
+}
+
+/* ------------------------------------------------------------------
+   Ledger: skills and credentials on banded rows
+   ------------------------------------------------------------------ */
+
+.ledger {
+  border-top: 2px solid var(--ink);
+}
+
+.ledger > div {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 0.2rem 2rem;
+  margin-inline: -1rem;
+  padding: 0.95rem 1rem;
+}
+
+.ledger > div:nth-child(odd) {
+  background: var(--band);
+}
+
+.ledger dt {
+  font-weight: 650;
+}
+
+.ledger-dated > div {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+.ledger-dated dt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+  align-items: baseline;
+}
+
+.ledger-when {
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------------------
+   Documents
+   ------------------------------------------------------------------ */
+
+.docs {
+  border-top: 2px solid var(--ink);
+}
+
+.doc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.75rem 2rem;
+  align-items: center;
+  margin-inline: -1rem;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.doc.is-primary {
+  background: var(--band);
+}
+
+.doc h3 {
+  font-size: 1.25rem;
+}
+
+.doc-body p {
+  max-width: 36em;
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.doc-meta {
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.doc-open {
+  font-size: var(--small);
+  font-weight: 550;
+  color: var(--teal);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Contact and footer
+   ------------------------------------------------------------------ */
+
+.contact {
+  padding-block: clamp(4rem, 9vw, 7rem) 2rem;
+}
+
+.contact h2 {
+  max-width: 12em;
+  font-size: clamp(2.25rem, 1rem + 4vw, 3.75rem);
+}
+
+.contact-text {
+  max-width: 34em;
+  margin-top: 1.25rem;
+  font-size: var(--lede);
+  line-height: 1.5;
+  color: var(--on-pine-body);
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem 2rem;
+  margin-top: clamp(3rem, 8vw, 6rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--pine-line);
+  color: var(--on-pine-soft);
+}
+
+/* ------------------------------------------------------------------
+   Narrower screens
+   ------------------------------------------------------------------ */
+
+@media (max-width: 68rem) {
+  /* Icons keep their accessible names; only the visible text goes. */
+  .site-header-actions .icon-link span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 56rem) {
+  .career {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* The path turns to run down the page. */
+  .path {
+    grid-auto-flow: row;
+  }
+
+  .stage {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.6rem;
+    padding: 0 0 1.1rem 2rem;
+  }
+
+  .stage::before {
+    inset: 0 auto 0 6px;
+    border-top: 0;
+    border-left: 2px solid var(--teal);
+  }
+
+  .stage[data-by='model']::before {
+    border-left-style: dashed;
+  }
+
+  .stage > .stage-marker {
+    top: 4px;
+  }
+
+  .stage-by {
+    min-width: 3.1rem;
+  }
+
+  .stage-label {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stage:last-child {
+    padding-bottom: 0;
+  }
+
+  .path::after {
+    left: 5px;
+    top: 0;
+    width: 4px;
+    height: calc(100% - 1.4rem);
+    background: linear-gradient(180deg, transparent, var(--pulse) 50%, transparent) no-repeat;
+    background-size: 100% 4rem;
+    animation-name: travel-down;
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pao {
+    grid-template-columns: 1fr;
+  }
+
+  .brief {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+  }
+
+  .brief .work-links {
+    grid-column: 2;
+    flex-direction: row;
+  }
+
+  .doc {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .doc-meta {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .doc-actions {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 46rem) {
+  .site-header-inner {
+    flex-wrap: wrap;
+    padding-top: 0.6rem;
+  }
+
+  .site-header-actions {
+    margin-left: auto;
+  }
+
+  .site-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 1px solid var(--pine-line);
+  }
+
+  .site-nav ul {
+    gap: 1.4rem;
+    padding-block: 0.6rem;
+    white-space: nowrap;
+  }
+
+  html {
+    scroll-padding-top: 7rem;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Text runs the full width here, so the dots stay quiet everywhere. */
+  .dot-field {
+    -webkit-mask-image: linear-gradient(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.5));
+    mask-image: linear-gradient(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.5));
+  }
+
+  .hero-portrait {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .facts {
+    margin-top: 0;
+  }
+
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 0.05rem;
+  }
+
+  .case-head,
+  .role,
+  .reference,
+  .brief,
+  .ledger > div,
+  .ledger-dated > div {
+    grid-template-columns: 1fr;
+  }
+
+  .case-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+    padding-top: 0;
+  }
+
+  .role-when,
+  .brief-org {
+    padding-top: 0;
+  }
+
+  .role-place {
+    display: inline;
+    margin-left: 0.75rem;
+  }
+
+  .reference blockquote,
+  .reference figcaption,
+  .brief .work-links {
+    grid-column: 1;
+  }
+
+  .case-foot {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 34rem) {
+  .career {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header-actions .icon-link {
+    display: none;
+  }
+
+  /* Clipped, not removed, so the link is still announced as "Download CV". */
+  .wide-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hero-actions .button,
+  .contact-actions .button {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .doc {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-actions {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+}

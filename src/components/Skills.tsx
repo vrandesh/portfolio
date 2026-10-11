@@ -1,4 +1,5 @@
-import { credentials, skills } from '@/content/site';
+import { credentials, practices } from '@/content/site';
+import { Tools } from './Tools';
 
 export function Skills() {
   return (
@@ -6,17 +7,22 @@ export function Skills() {
       <div className="wrap">
         <header className="section-head">
           <h2 id="skills-heading">Skills</h2>
-          <p>What I reach for in production, grouped by where it sits in the system.</p>
+          <p>What I reach for in production, and the projects each one has earned its place in.</p>
         </header>
 
-        <dl className="ledger">
-          {skills.map((group) => (
-            <div key={group.area}>
-              <dt>{group.area}</dt>
-              <dd>{group.items.join(', ')}</dd>
-            </div>
-          ))}
-        </dl>
+        <Tools />
+
+        <div className="subsection" id="practices">
+          <h3 className="subsection-title">Practices</h3>
+          <dl className="ledger">
+            {practices.map((group) => (
+              <div key={group.area}>
+                <dt>{group.area}</dt>
+                <dd>{group.items.join(', ')}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
         <div className="subsection" id="education">
           <h3 className="subsection-title">Education and credentials</h3>

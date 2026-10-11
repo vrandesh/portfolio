@@ -20,6 +20,7 @@ Every word on the site is in [src/content/site.ts](src/content/site.ts): profile
 - **A case study** is an entry in `caseStudies`. Its `path` is the row of stages drawn under the title; each stage says who makes the call there (`data`, `code`, `model` or `person`).
 - **A GitHub link** is a `links` entry with `kind: 'github'`, on a case study or a brief item. Repositories listed under "Code on GitHub" are in `repos`.
 - **Availability** in the hero is `profile.availability`. Set it to `''` to hide the line.
+- **The tools grid** under Skills is the `tools` list. Each tile shows the projects that used the tool, worked out from the `stack` of every case study and brief item: a project counts when one of its stack entries contains one of the tool's `match` strings. Add a tool to a project's `stack` and it appears on the tile. The marks themselves are in [src/content/logos.ts](src/content/logos.ts).
 
 ## Documents
 

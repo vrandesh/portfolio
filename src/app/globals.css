@@ -1181,7 +1181,233 @@ h3 {
 }
 
 /* ------------------------------------------------------------------
-   Ledger: skills and credentials on banded rows
+   Tools: a grid of marks. Each tile swaps its one-liner for the
+   projects that used the tool on hover, focus or tap.
+   ------------------------------------------------------------------ */
+
+.tool-groups {
+  display: grid;
+  gap: 2.25rem;
+}
+
+.tool-group-title {
+  margin-bottom: 0.8rem;
+  font-size: 1.0625rem;
+}
+
+.tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.tool {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  padding: 1.15rem 1rem 1.1rem;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  outline-offset: -4px;
+  transition: background-color 0.3s;
+}
+
+/* A bar in the tool's own colour draws across the top. */
+.tool::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--brand, var(--teal));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Marks sit on one dark badge in both themes, so each needs a single colour. */
+.tool-logo {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 6px;
+  background: #0a2824;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.35s;
+}
+
+.tool-logo svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.tool-name {
+  font-size: 1.0625rem;
+  font-stretch: 106%;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+/* Both faces share one grid cell, so the tile is as tall as the taller one
+   and nothing jumps when they swap. */
+.tool-swap {
+  display: grid;
+  margin-top: 0.3rem;
+}
+
+.tool-front,
+.tool-back {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.25s,
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tool-front p {
+  font-size: var(--small);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.tool-front .tool-count,
+.tool-used,
+.tool-note {
+  font-stretch: var(--narrow);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.012em;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.tool-front .tool-count {
+  margin-top: 0.55rem;
+  color: var(--teal);
+}
+
+.tool-back {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.tool-used {
+  color: var(--ink-soft);
+}
+
+.tool-back ul {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.3rem;
+  padding-left: 1.05rem;
+  list-style: disc;
+}
+
+.tool-back li {
+  font-stretch: 90%;
+  font-size: var(--small);
+  font-weight: 500;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity 0.25s,
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tool-back li::marker {
+  color: var(--brand, var(--teal));
+}
+
+.tool-back .tool-more {
+  list-style: none;
+  color: var(--ink-soft);
+}
+
+.tool:is(:hover, :focus) {
+  background: color-mix(in srgb, var(--brand, var(--teal)) 7%, var(--surface));
+}
+
+.tool:is(:hover, :focus)::before {
+  transform: scaleX(1);
+}
+
+.tool:is(:hover, :focus) .tool-logo {
+  transform: translateY(-2px) scale(1.07);
+  box-shadow:
+    0 0 0 2px var(--brand, var(--teal)),
+    0 10px 22px -8px color-mix(in srgb, var(--brand, var(--teal)) 70%, transparent);
+}
+
+.tool:is(:hover, :focus) .tool-front {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.tool:is(:hover, :focus) .tool-back {
+  opacity: 1;
+  transform: none;
+}
+
+/* The dot points arrive one after another. */
+.tool:is(:hover, :focus) .tool-back li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--n) * 50ms + 90ms);
+}
+
+.tool-note {
+  color: var(--ink-soft);
+}
+
+/* Entrance, once, as each group scrolls into view (see Reveal.tsx). */
+[data-reveal='armed'] .tool {
+  opacity: 0;
+}
+
+[data-reveal='in'] .tool {
+  animation: tool-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+[data-reveal='in'] .tool-logo {
+  animation: mark-in 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+  animation-delay: calc(var(--i) * 45ms + 70ms);
+}
+
+@keyframes tool-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(-14deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool,
+  .tool::before,
+  .tool-logo,
+  .tool-front,
+  .tool-back,
+  .tool-back li {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Ledger: practices and credentials on banded rows
    ------------------------------------------------------------------ */
 
 .ledger {

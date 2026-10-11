@@ -1,5 +1,7 @@
 // All the words on the site live in this file. Edit here, rebuild, done.
 
+import type { LogoId } from './logos';
+
 export const profile = {
   name: 'Vrandesh Bandikatti',
   role: 'Forward deployed engineer',
@@ -729,38 +731,102 @@ export const earlier = [
 /* Skills                                                              */
 /* ------------------------------------------------------------------ */
 
-export const skills = [
+// Tools, shown as a grid of logos. Each tile lists the projects that used the
+// tool, and that list is worked out from the `stack` of every case study and
+// brief item above: a project counts when one of its stack entries contains
+// one of the tool's `match` strings. Add a project with a stack and the grid
+// updates itself. `also` adds entries that have no stack to match.
+
+export type ToolGroupId = 'ai' | 'web' | 'backend' | 'cloud' | 'data';
+
+export const toolGroups: { id: ToolGroupId; title: string }[] = [
+  { id: 'ai', title: 'AI and agents' },
+  { id: 'web', title: 'Languages and front end' },
+  { id: 'backend', title: 'Back end and messaging' },
+  { id: 'cloud', title: 'Cloud and infrastructure' },
+  { id: 'data', title: 'Data and analytics' },
+];
+
+export type Tool = {
+  name: string;
+  logo: LogoId;
+  group: ToolGroupId;
+  line: string; // what I use it for, in one line
+  match: string[];
+  also?: string[];
+};
+
+export const tools: Tool[] = [
+  { name: 'LangGraph', logo: 'langgraph', group: 'ai', line: 'Agent state machines with checkpoints and approval interrupts.', match: ['LangGraph'] },
+  { name: 'Azure OpenAI', logo: 'openai', group: 'ai', line: 'Extraction, query drafting and plain-language answers in production.', match: ['Azure OpenAI'] },
+  { name: 'Pydantic', logo: 'pydantic', group: 'ai', line: 'Typed contracts between a model and the code that trusts it.', match: ['Pydantic'] },
+  { name: 'LangChain', logo: 'langchain', group: 'ai', line: 'Model calls, structured output and retrieval plumbing.', match: ['LangChain'] },
+  { name: 'Claude', logo: 'claude', group: 'ai', line: 'Claude API for agent builds, Claude Code for my own tooling.', match: ['Claude'] },
+  { name: 'CrewAI', logo: 'crewai', group: 'ai', line: 'Role-based crews of agents working one job together.', match: ['CrewAI'] },
+  { name: 'Deepgram', logo: 'deepgram', group: 'ai', line: 'Streaming speech-to-text that knows when someone has finished.', match: ['Deepgram'] },
+  { name: 'ElevenLabs', logo: 'elevenlabs', group: 'ai', line: 'Streaming text-to-speech, so a reply starts in about a second.', match: ['ElevenLabs'] },
+  { name: 'Vapi', logo: 'vapi', group: 'ai', line: 'Voice agent orchestration: turn-taking and barge-in.', match: ['Vapi'] },
+  { name: 'OpenRouter', logo: 'openrouter', group: 'ai', line: 'One key, many models, for comparing them on the same cases.', match: ['OpenRouter'] },
+
+  { name: 'Python', logo: 'python', group: 'web', line: 'The default for services, pipelines and agents.', match: ['Python'] },
+  { name: 'TypeScript', logo: 'typescript', group: 'web', line: 'Typed front ends and Node services.', match: ['TypeScript'], also: ['This site'] },
+  { name: 'React', logo: 'react', group: 'web', line: 'Web apps, and the surfaces that sit inside Microsoft Teams.', match: ['React'] },
+  { name: 'Vue', logo: 'vue', group: 'web', line: 'Enterprise portals on Vue 3.', match: ['Vue'] },
+  { name: 'Next.js', logo: 'nextjs', group: 'web', line: 'React with static export and server rendering.', match: ['Next.js'], also: ['This site'] },
+  { name: 'Node.js', logo: 'nodejs', group: 'web', line: 'APIs and serverless microservices.', match: ['Node.js'] },
+
+  { name: 'FastAPI', logo: 'fastapi', group: 'backend', line: 'The API layer for agents and governed data.', match: ['FastAPI'] },
+  { name: 'Django', logo: 'django', group: 'backend', line: 'Enterprise platforms with a real permission model.', match: ['Django'] },
+  { name: 'GraphQL', logo: 'graphql', group: 'backend', line: 'One typed API behind data-heavy screens.', match: ['GraphQL'] },
+  { name: 'NATS', logo: 'nats', group: 'backend', line: 'JetStream messaging between agents.', match: ['NATS'] },
+  { name: 'RabbitMQ', logo: 'rabbitmq', group: 'backend', line: 'Work queues with acknowledgement and retries.', match: ['RabbitMQ'] },
+
+  { name: 'Azure', logo: 'azure', group: 'cloud', line: 'Functions, Durable Functions, AI Foundry and Entra ID.', match: ['Azure', 'Durable Functions', 'Data Factory', 'Entra ID'] },
+  { name: 'AWS', logo: 'aws', group: 'cloud', line: 'Lambda and Step Functions for event-driven services.', match: ['AWS', 'Step Functions'] },
+  { name: 'Firebase', logo: 'firebase', group: 'cloud', line: 'Real-time data and cloud functions.', match: ['Firebase', 'Firestore'] },
+  { name: 'Kubernetes', logo: 'kubernetes', group: 'cloud', line: 'Autoscaled workloads for agent runtimes.', match: ['Kubernetes'] },
+  { name: 'Cloudflare', logo: 'cloudflare', group: 'cloud', line: 'Static hosting at the edge.', match: ['Cloudflare'] },
+
+  { name: 'Microsoft Fabric', logo: 'fabric', group: 'data', line: 'Governed bronze, silver and gold layers on OneLake.', match: ['Microsoft Fabric'] },
+  { name: 'Power BI', logo: 'powerbi', group: 'data', line: 'Semantic models, embedded reports and row-level security.', match: ['Power BI'] },
+  { name: 'Databricks', logo: 'databricks', group: 'data', line: 'Lakehouse processing behind the data layers.', match: ['Databricks'] },
+];
+
+export function projectsUsing(tool: Tool): string[] {
+  const wanted = tool.match.map((m) => m.toLowerCase());
+  const uses = (stack: string[]) => stack.some((entry) => wanted.some((m) => entry.toLowerCase().includes(m)));
+  return [
+    ...caseStudies.filter((study) => uses(study.stack)).map((study) => study.title),
+    ...moreWork.filter((item) => uses(item.stack)).map((item) => item.title),
+    ...(tool.also ?? []),
+  ];
+}
+
+// The techniques behind the tools. No logos for these.
+export const practices = [
   {
-    area: 'Agentic AI systems',
-    items: ['Multi-agent orchestration', 'LangGraph state machines', 'CrewAI', 'Tool and function calling', 'MCP integration', 'Structured output contracts with Pydantic and JSON schema', 'Self-repair and bounded retry loops', 'Human-in-the-loop gates', 'Prompt caching and context-window management', 'Claude API', 'Azure OpenAI', 'Amazon Bedrock'],
+    area: 'Agentic systems',
+    items: ['Multi-agent orchestration', 'Tool and function calling', 'MCP integration', 'Structured output contracts', 'Self-repair and bounded retry loops', 'Human-in-the-loop gates', 'Prompt caching and context-window management'],
   },
   {
-    area: 'Agent knowledge and RAG',
+    area: 'Knowledge and retrieval',
     items: ['Precompiled, versioned knowledge packs', 'Hybrid retrieval with vectors and BM25', 'Clause-preserving chunking', 'Re-ranking', 'Grounded generation with citations', 'Controlled knowledge updates', 'Evaluation harnesses', 'LangSmith and Grafana observability'],
   },
   {
-    area: 'Real-time and conversational AI',
-    items: ['Voice activity detection and endpointing', 'Turn-taking and barge-in', 'Streaming speech-to-text and text-to-speech', 'Speculative generation', 'Web Audio and AudioWorklet over WebSockets', 'Deepgram', 'ElevenLabs', 'Vapi'],
+    area: 'Real-time voice',
+    items: ['Voice activity detection and endpointing', 'Turn-taking and barge-in', 'Streaming speech-to-text and text-to-speech', 'Speculative generation', 'Web Audio and AudioWorklet over WebSockets'],
   },
   {
     area: 'Working with customers',
     items: ['Discovery workshops and problem framing', 'Prototypes and proofs of concept', 'Scoping and estimation', 'Architecture trade-offs for executives', 'UAT and scenario walkthroughs', 'Adoption with non-technical teams'],
   },
   {
-    area: 'Front end and product',
-    items: ['TypeScript', 'React', 'Vue 3', 'Next.js', 'Component-driven UI', 'Microsoft Teams apps', 'Rapid prototyping from customer conversation to working demo'],
+    area: 'Reliability and security',
+    items: ['Event-driven and serverless design', 'Idempotency, retries and graceful degradation', '12+ production microservices', 'OAuth, role-based access and row-level security', 'CI/CD with environment promotion', 'Tracing and alerting'],
   },
   {
-    area: 'Back end and distributed systems',
-    items: ['Python', 'FastAPI', 'Django', 'Node.js', 'REST and GraphQL', '12+ production microservices', 'Event-driven messaging with NATS JetStream and RabbitMQ', 'Redis', 'Idempotency, retries and graceful degradation', 'Entra ID, OAuth and role-based access'],
-  },
-  {
-    area: 'Cloud and infrastructure',
-    items: ['Azure Functions and Durable Functions', 'AWS Lambda and Step Functions', 'GCP Cloud Functions, Firebase and Firestore', 'Docker', 'Kubernetes with horizontal pod autoscaling', 'Consul', 'CI/CD with environment promotion', 'Grafana tracing and alerting'],
-  },
-  {
-    area: 'Data platforms',
-    items: ['Microsoft Fabric and OneLake', 'Databricks', 'Power BI Embedded', 'SQL and NoSQL stores', 'Xero, MYOB and Workday integrations'],
+    area: 'Also in the toolbox',
+    items: ['Amazon Bedrock', 'Docker', 'Redis', 'Consul', 'PostgreSQL and SQL Server', 'Google Cloud Functions', 'Xero, MYOB and Workday integrations'],
   },
 ];
 
